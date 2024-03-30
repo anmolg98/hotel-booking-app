@@ -7,6 +7,8 @@ import About from './Components/About';
 import CommentComp from './Components/CommentComp';
 import { Routes,Route} from 'react-router-dom';
 import { useState } from 'react';
+import LoginForm from './Components/LoginForm';
+import Signup from './Components/Signup';
 
 
 function App() {
@@ -24,6 +26,9 @@ function App() {
       <Routes>
         <Route path="/" exact element={<Body handleCommentClick={handleCommentClick} />} />
         <Route path="/about" element={<About />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<LoginForm />} />
+      
         <Route path="/comment" element={<CommentComp currentHotel={currentHotel} />} />
       </Routes>
    

@@ -5,15 +5,18 @@ import axios from 'axios';
 
 export default function CommentComp(props) {
   const [commentDesc, setCommentDesc] = useState(''); // State to hold the comment description
-
+  let [submissionState,setSubmissionState]=useState(false)
+  let [placeholder,changePlaceholder]=useState("Enter Your Comment")
   const registerCommentHandler = () => {
     // Prepare request body with the comment description from state
+    const jsDate = new Date();
+    const isoString = jsDate.toISOString();
     let requestBody = JSON.stringify({
       hotel: {
         hotelId: props.currentHotel.hotelId
       },
       comment_desc: commentDesc, // Use the comment description from state
-      timestampField: "2023-09-13T15:30:00"
+      timestampField: isoString
     });
 
     // Send POST request to the server
@@ -25,6 +28,10 @@ export default function CommentComp(props) {
     .then(response => {
       // Handle response if needed
       console.log(response);
+      setSubmissionState(true)
+      changePlaceholder("Enter Another Comment")
+
+
     })
     .catch(error => {
       // Handle error if needed
@@ -33,14 +40,25 @@ export default function CommentComp(props) {
   }
 
    let [currentHotelComments,setCurrentHotelComments]=useState([]);
-  /* useEffect(()=>{
+   useEffect(()=>{
        let requestBody = JSON.stringify({
         hotelId: props.currentHotel.hotelId
-});
- 
+     });
+     axios.post('http://localhost:8080/getCommentsByHotel',requestBody,{
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(
+      response=>{
+        setCurrentHotelComments(response.data)
+      }
+     ).catch(error => {
+      // Handle error if needed
+      console.error('Error:', error);
+    });
 
    },[]
-)*/
+)
 
   // Check if props.currentHotel exists before accessing its properties
   const hotelName = props.currentHotel ? props.currentHotel.hotelName : '';
@@ -50,14 +68,18 @@ export default function CommentComp(props) {
     <div>
       This is comment section
        <h2>Hotel Name : {hotelName}</h2>
-      <input 
+      <input id="inputId"
         type="text" 
-        placeholder="Enter your comment" 
-         
-        onChange={(e) => setCommentDesc(e.target.value)} // Update commentDesc state on change
+        value={placeholder}
+        
+        onChange={(e) => {setCommentDesc(e.target.value);
+          changePlaceholder(e.target.value);
+        }
+        } // Update commentDesc state on change
       /><br />
       {/* Display hotel name */}
       <button onClick={registerCommentHandler}>Comment</button><br />
+      {submissionState?<div>Comment Submmitted Succesfully</div>:<div/>}
      { currentHotelComments.map((comment,index) => {
     
        return <div className="m-2">
