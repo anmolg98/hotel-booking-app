@@ -1,24 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
+import Header from './Components/Header';
+import Body from './Components/Body';
+import Footer from './Components/Footer';
+import About from './Components/About';
+import CommentComp from './Components/CommentComp';
+import { Routes,Route} from 'react-router-dom';
+import { useState } from 'react';
+
 
 function App() {
+   let [currentHotel,setCurrentHotel] = useState({})
+
+   let handleCommentClick = (hotel)=>{
+    setCurrentHotel(hotel);
+    console.log("Comment clicked",hotel);
+}
+   
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Header></Header>
+    
+      <Routes>
+        <Route path="/" exact element={<Body handleCommentClick={handleCommentClick} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/comment" element={<CommentComp currentHotel={currentHotel} />} />
+      </Routes>
+   
+  
+    <Footer></Footer>
+   
+    </>
   );
 }
 
