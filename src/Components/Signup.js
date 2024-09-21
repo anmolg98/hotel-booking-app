@@ -58,12 +58,14 @@ export default function Signup() {
                 This is Signup Form
             </CardHeader>
             <CardBody>
+
         <form className="login-form">
             First Name : 
           <input></input><br></br>
           Last Name : 
           <input></input><br></br>
           Username : 
+
           <input onChange={userNameonchangeHandler}></input>
           {(userNameTakenState==='taken')&& <div>This userName is already taken</div>}
           <br></br>
@@ -88,6 +90,7 @@ export default function Signup() {
         </CardBody>
         </Card>
         </Container>
+
       );
  };
 

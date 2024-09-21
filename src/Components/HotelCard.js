@@ -30,12 +30,16 @@ export default function HotelCard({hotelDesc,handleCommentClick}) {
         setTotalRatings(totalRatings);
         currentTotal+=parseInt(selectedOption);
         console.log(currentTotal)
+
         currentRating = (currentTotal/totalRatings).toFixed(2);
+
         setHotelRating(currentRating);
         
         let requestBody = JSON.stringify({
           hotelName: hotelDesc.hotelName,
+
           hotelRating: currentRating,
+
           totalRatings: totalRatings
       });
       console.log(requestBody);
