@@ -1,10 +1,59 @@
 import React from 'react'
 import { Card, CardBody, CardHeader, Container } from 'reactstrap';
-import { useState } from 'react';
+import { useState,useRef } from 'react';
 import axios from 'axios';
 
 
+
 export default function Signup() {
+
+    const userRef = useRef(null);
+    const passwordRef = useRef(null); 
+    
+    const [responseMessage, setResponseMessage] = useState('');
+    const [error, setError] = useState(null);
+    let[inputValues,setInputValues] = useState(
+        {
+          input1:'',
+          input2:'',
+}
+    )
+
+    const signUpClickHandler  = ()=>{
+             console.log("Inside SignUpClick Handler")
+            if(passwordIconState==='correct'&&userNameTakenState==='not taken'){
+                if(inputValues.input1.length>0&&inputValues.input2.length>0){
+                    let signUpurl = "http://localhost:8080/signupuser";
+                    let signupJSON = {
+                         firstName:inputValues.input1,
+                         lastName:inputValues.input2,
+                         userName:userRef.current.value,
+                         password:passwordRef.current.value,
+                    }
+                    console.log(signupJSON);
+                    
+                    axios.post(signUpurl,signupJSON).then((result)=>{
+                         console.log(result)
+                         setResponseMessage(result.data)
+                         setError(null)
+                    }).catch((err)=>{
+                         console.log(err);
+                         setError('Failed to sign up');
+                         setResponseMessage('');
+                    })
+                    
+
+                }
+                else{
+                    alert("First Name or Last Name is empty");
+                }
+                
+               
+            }
+            else{
+                alert("Please enter valid username or password");
+            }
+    }
     
     const isValidPassword = (password) => {
         // Check for minimum length
@@ -24,6 +73,16 @@ export default function Signup() {
 
     let [passwordIconState,setpasswordIconState] = useState("empty")
     let [userNameTakenState,setUserNameTakenState]=useState("not taken")
+
+    
+    const inputChangeHandler = (event)=>{
+           const {id,value} = event.target;
+           setInputValues((prevInputs)=>({
+            ...prevInputs,
+            [id] : value
+           }))
+          console.log(inputValues);
+    }
 
     let passWordchangeHandler=function(event){
            let currentPassword = event.target.value;
@@ -61,16 +120,28 @@ export default function Signup() {
 
         <form className="login-form">
             First Name : 
-          <input></input><br></br>
+          <input id="input1" 
+          type="text"
+          value={inputValues.input1}
+          onChange={inputChangeHandler} ></input><br></br>
           Last Name : 
-          <input></input><br></br>
+          <input id="input2" 
+          type = "text"
+          value={inputValues.input2}
+          onChange={inputChangeHandler}></input><br></br>
           Username : 
-
-          <input onChange={userNameonchangeHandler}></input>
+          <input 
+          ref={userRef}
+          onChange={userNameonchangeHandler}
+          autoComplete="username"></input>
           {(userNameTakenState==='taken')&& <div>This userName is already taken</div>}
           <br></br>
           Password :
-          <input type='password' onChange={passWordchangeHandler}></input> 
+          <input 
+          ref={passwordRef}
+          type='password' onChange={passWordchangeHandler}
+          autoComplete="current-password"
+          ></input> 
           
           
              {(passwordIconState==='correct')&&
@@ -85,8 +156,10 @@ export default function Signup() {
            Password should be atleast 8 characters, with a number and a special character 
           <br>
           </br>
-          <button >Signup</button>
+          <button onClick={signUpClickHandler}>Signup</button>
         </form>
+        {responseMessage && <p>{responseMessage}</p>} {/* Display success message */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </CardBody>
         </Card>
         </Container>
